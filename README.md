@@ -8,8 +8,8 @@ git clone https://github.com/edouardkoehn/WM_Atlas.git
 ```
 - Create your virtual env
 ```bash
-conda create -n wm python=3
-conda activate wm
+conda create -n iar_project python=3
+conda activate iar_project
 ```
 - Install poetry
 ```bash
@@ -18,7 +18,7 @@ pip install poetry
 - install the modul and set up the precommit
 ```bash
 poetry install
-poetry run pre-commit install
+pre-commit install
 poetry env info
 ```
 
