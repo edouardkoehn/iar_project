@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "template"#name of your module
+name = "iar_project"#name of your module
 version = "0.0.1"#version of your module
 description = "Template for repo"#description of your modeél
 authors = ["Edouard Koehn"]
@@ -12,10 +12,13 @@ numpy = "^1.24.3"
 
 # Dev dependencies
 jupyter = "^1.0.0"
-scipy = "^1.10.1"
+
 pillow = "^9.5.0"
 opencv-python = "^4.7.0.72"
 matplotlib = "^3.7.1"
+pandas = "^2.0.1"
+scikit-learn = "^1.2.2"
+scikit-image = "^0.20.0"
 [tool.poetry.dev-dependencies]
 pytest = "^6.2.5"
 black = "^21.12b0"
