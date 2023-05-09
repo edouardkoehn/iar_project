@@ -5,7 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+*.code-workspace
 # Distribution / packaging
 .Python
 build/
@@ -42,6 +42,7 @@ coverage.xml
 .pytest_cache/
 cover/
 
+iapr_env/
 
 # Jupyter Notebook
 .ipynb_checkpoints
