@@ -1,6 +1,7 @@
 import os
 
 import cv2
+import matplotlib.pyplot as plt
 import numpy as np
 
 import iar_project.utils as utils
@@ -41,7 +42,7 @@ def clean_mask(mask, min_area=1000, max_area=1600):
         if (cv2.contourArea(cnt) > min_area and cv2.contourArea(cnt) < max_area)
     ]
     rects = [cv2.minAreaRect(cnt) for cnt in filtered_contours]
-    rects = [rect for rect in rects if (abs(rect[1][0] - rect[1][1]) < 0.1)]
+    rects = [rect for rect in rects if (abs(rect[1][0] - rect[1][1]) < 3)]
     boxes = [cv2.boxPoints(rect) for rect in rects]
     boxes = [np.intp(box) for box in boxes]
     return boxes
@@ -62,7 +63,7 @@ def extract_segemented_object(src_img, mask, src_image_number):
 
     ind = 0
     for c in contours:
-        if len(c) > 10:
+        if len(c) > 100:
             # Create the rectrangle
             rectangleArea = cv2.minAreaRect(c)
             angle = int(rectangleArea[2])
@@ -76,21 +77,22 @@ def extract_segemented_object(src_img, mask, src_image_number):
             b_rotated = cv2.warpAffine(src_b, M, src_b.shape[:2], cv2.WARP_INVERSE_MAP)
 
             # Extract the rotated object
-            cropped_r = r_rotated[
-                np.min(box[:, 1]) : np.max(box[:, 1]),
-                np.min(box[:, 0]) : np.max(box[:, 0]),
-            ]
-            cropped_g = g_rotated[
-                np.min(box[:, 1]) : np.max(box[:, 1]),
-                np.min(box[:, 0]) : np.max(box[:, 0]),
-            ]
-            cropped_b = b_rotated[
-                np.min(box[:, 1]) : np.max(box[:, 1]),
-                np.min(box[:, 0]) : np.max(box[:, 0]),
-            ]
+            miny = np.min(box[:, 1]) if np.min(box[:, 1]) >= 0 else 0
+            maxy = np.max(box[:, 1]) if np.max(box[:, 1]) <= 2000 else 2000
 
+            minx = np.min(box[:, 0]) if np.min(box[:, 0]) >= 0 else 0
+            maxx = np.max(box[:, 0]) if np.max(box[:, 0]) <= 2000 else 2000
+
+            cropped_r = r_rotated[miny:maxy, minx:maxx]
+            cropped_g = g_rotated[miny:maxy, minx:maxx]
+            cropped_b = b_rotated[miny:maxy, minx:maxx]
             # Refine the extraction
-            if cropped_b.shape[0] >= 128 & cropped_b.shape[1] >= 128:
+            if (
+                cropped_b.shape[0]
+                >= 128 & cropped_b.shape[1]
+                >= 128 & cropped_r.shape[1]
+                >= 128
+            ):
                 rows, cols = cropped_r.shape
                 center = [int((cols - 1) / 2.0), int((rows - 1) / 2.0)]
                 cropped_r = cropped_r[
@@ -102,33 +104,14 @@ def extract_segemented_object(src_img, mask, src_image_number):
                 cropped_b = cropped_b[
                     center[0] - 64 : center[0] + 64, center[1] - 64 : center[1] + 64
                 ]
-            if (
-                cropped_r.shape[0] != 128
-                or cropped_g.shape[0] != 128
-                or cropped_b.shape[0] != 128
-            ):
-                print("stop")
-                plt.figure()
-                plt.imshow(src_img)
+            # Fuse the channel
 
-                plt.figure()
-                plt.imshow(mask)
+            segemented = cv2.merge([cropped_r, cropped_g, cropped_b])
 
-                plt.figure()
-                plt.imshow(cropped_r)
-
-                print(c)
-                print(len(c))
-                print(cropped_r.shape)
-                print(type(cv2.merge([cropped_r, cropped_g, cropped_b])))
-                plt.show()
-        # Fuse the channel
-        segemented = cv2.merge([cropped_r, cropped_g, cropped_b])
-
-        if segemented.shape[0] == 128:
-            export_file = f"{path_out}/{src_image_number}_{ind}.png"
-            cv2.imwrite(export_file, segemented)
-            ind += 1
+            if segemented.shape[0] == 128:
+                export_file = f"{path_out}/{src_image_number}_{ind}.png"
+                cv2.imwrite(export_file, segemented)
+                ind += 1
     return
 
 
@@ -140,6 +123,7 @@ def filter_1(src_imgages):
     threshold_h = [
         cv2.threshold(img, 0.1, 255, cv2.THRESH_BINARY_INV)[1] for img in train_data_hue
     ]
+
     mask_clean = [
         draw_contours(img, clean_mask(img, min_area=15000, max_area=16384))
         for img in threshold_h
@@ -162,7 +146,7 @@ def filter_2(src_images):
         for img in threshold_v_100
     ]
     mask_clean = [
-        draw_contours(img, clean_mask(img, min_area=14000, max_area=20000))
+        draw_contours(img, clean_mask(img, min_area=14000, max_area=16384))
         for img in threshold_v_100
     ]
     return mask_clean
@@ -206,9 +190,74 @@ def filter_4(src_images):
     return mask_clean
 
 
-import matplotlib.pyplot as plt
+def filter_5(src_images):
+    train_data_hue = [
+        cv2.cvtColor(data, cv2.COLOR_RGB2HSV)[:, :, 0] for data in src_images
+    ]
+    threshold_h = [
+        cv2.threshold(img, 0.1, 255, cv2.THRESH_BINARY)[1] for img in train_data_hue
+    ]
+    kernel = np.ones((2, 2), np.uint8)
+    thresholded_h = [
+        cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=3)
+        for img in threshold_h
+    ]
+    thresholded_h = [
+        cv2.threshold(img, 0.0, 255, cv2.THRESH_BINARY_INV)[1] for img in thresholded_h
+    ]
 
-import iar_project.utils as utils
+    mask_clean = [
+        draw_contours(img, clean_mask(img, min_area=15000, max_area=16384))
+        for img in thresholded_h
+    ]
+    return mask_clean
+
+
+def filter_6(src_images):
+    train_data_blue = [cv2.split(data)[2] for data in src_images]
+
+    train_data_red = [cv2.split(data)[0] for data in src_images]
+
+    threshold_blue = [
+        cv2.threshold(img, 45, 255, cv2.THRESH_BINARY_INV)[1] for img in train_data_blue
+    ]
+
+    threshold_red = [
+        cv2.threshold(img, 34, 255, cv2.THRESH_BINARY_INV)[1] for img in train_data_red
+    ]
+    threshold_comb = [b + r for r, b in zip(threshold_red, threshold_blue)]
+    kernel = np.ones((4, 4), np.uint8)
+    thresholded = [
+        cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=3)
+        for img in threshold_comb
+    ]
+    kernel = np.ones((2, 2), np.uint8)
+    thresholded = [
+        cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel, iterations=3)
+        for img in thresholded
+    ]
+    mask_clean = [
+        draw_contours(img, clean_mask(img, min_area=15000, max_area=20000))
+        for img in thresholded
+    ]
+    return mask_clean
+
+
+def filter_7(src_images):
+    train_data_blue = [cv2.split(data)[2] for data in src_images]
+    threshold_blue = [
+        cv2.threshold(img, 125, 255, cv2.THRESH_BINARY)[1] for img in train_data_blue
+    ]
+    kernel = np.ones((3, 3), np.uint8)
+    thresholded = [
+        cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=3)
+        for img in threshold_blue
+    ]
+    mask_clean = [
+        draw_contours(img, clean_mask(img, min_area=15000, max_area=20000))
+        for img in thresholded
+    ]
+    return mask_clean
 
 
 def plot_mask(images, masks, title="Test"):
@@ -216,14 +265,33 @@ def plot_mask(images, masks, title="Test"):
     plt.suptitle(title)
 
     for img, mask, ind in zip(images, masks, np.arange(15)):
-        r, g, b = cv2.split(img)
+        b, g, r = cv2.split(img)
         r = r * mask
         g = g * mask
         b = b * mask
         color_img = cv2.merge([r, g, b])
-        plt.title(f"img {ind}")
+        plt.title(f"img {ind-1}")
         plt.subplot(2, 8, ind + 1)
         plt.imshow(color_img, cmap="gray")
         plt.axis("off")
     plt.tight_layout()
     plt.show()
+
+
+# import iar_project.utils as utils
+# train_data=utils.import_train()
+# M1=filter_1(train_data)
+# M2=filter_2(train_data)
+# M3=filter_3(train_data)
+# M4=filter_4(train_data)
+# M5=filter_5(train_data)
+# M6=filter_6(train_data)
+# M7=filter_7(train_data)
+
+# mask=[]
+# for a,b,c,d,e,f,g in zip(M1,M2,M3,M4,M5,M6,M7):
+#     mask.append(a+b+c+d+e+f+g)
+
+# #plot_mask(train_data,mask)
+# for i in range(0,15):
+#     extract_segemented_object(train_data[i],mask[i],i)
