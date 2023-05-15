@@ -278,8 +278,29 @@ def plot_mask(images, masks, title="Test"):
     plt.show()
 
 
+def plot_mask2(images, masks, title="Test"):
+    plt.figure(figsize=(20, 7))
+    plt.suptitle(title)
+
+    for img, mask, ind in zip(images, masks, np.arange(15)):
+        b, g, r = cv2.split(img)
+        r = r * mask
+        g = g * mask
+        b = b * mask
+        color_img = cv2.merge([r, g, b])
+        plt.title(f"img {ind-1}")
+        plt.subplot(2, 8, ind + 1)
+        plt.imshow(color_img, cmap="gray")
+        plt.axis("off")
+    plt.tight_layout()
+
+
 # import iar_project.utils as utils
-# train_data=utils.import_train()
+# train_data=utils.import_train2()
+# plt.figure()
+# mask_none=[np.ones_like(train_data[0][:,:,1]) for i in range(11)]
+# plot_mask2(train_data,mask_none)
+
 # M1=filter_1(train_data)
 # M2=filter_2(train_data)
 # M3=filter_3(train_data)
@@ -290,8 +311,9 @@ def plot_mask(images, masks, title="Test"):
 
 # mask=[]
 # for a,b,c,d,e,f,g in zip(M1,M2,M3,M4,M5,M6,M7):
-#     mask.append(a+b+c+d+e+f+g)
-
-# #plot_mask(train_data,mask)
+#      mask.append(a+b+c+d+e+f+g)
+# plt.figure('seg')
+# plot_mask(train_data,mask)
+# plt.show()
 # for i in range(0,15):
 #     extract_segemented_object(train_data[i],mask[i],i)
