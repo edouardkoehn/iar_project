@@ -11,7 +11,7 @@ SEGMENTATION_OUTPUT_PATH2 = DATA_PATH2 + "/segmentation_results"
 
 
 def import_train():
-    """Method for loading the train image and return them as a list"""
+    """Method for loading the train image and return them as a list  (dataset2)"""
 
     train_path = DATA_PATH + "/train"
     img_list = []
@@ -30,11 +30,10 @@ def import_train():
 
 
 def import_train2():
-    """Method for loading the second train image and return them as a list"""
-
+    """Method for loading the second train image and return them as a list (dataset2)"""
     train_path = DATA_PATH2 + "/train2"
     img_list = []
-    for i in range(11):
+    for i in range(12):
         img_name = (
             f"train_{str(i).zfill(2)}.png"  # zfill() pads the number with leading zeros
         )
@@ -49,8 +48,12 @@ def import_train2():
     return img_list
 
 
-def check_output_segmentation_folder():
-    path_out = SEGMENTATION_OUTPUT_PATH2
+def check_output_segmentation_folder(dataset_used=2):
+    """Method for creating the segmentation output folder"""
+    if dataset_used == 2:
+        path_out = SEGMENTATION_OUTPUT_PATH2
+    else:
+        path_out = SEGMENTATION_OUTPUT_PATH2
     if not (os.path.exists(path_out)):
         os.mkdir(path_out)
     return path_out
