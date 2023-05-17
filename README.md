@@ -1,5 +1,13 @@
-# project-template
-Template repostiory for accelerate your project
+# Project IAPR
+Repository containing the code for the IAPR-project.
+# Segmentation
+Make sure that you followed the instrucrtions before running the code.
+All the methods use for the segmentation can be found in the file ```iar_project/segmentation.py```
+
+To run the segementation, you juste need to run the noto ```notebooks/0_Segmentation.ipynb```. The results of the segmentation would be strored in the folder ```data_project/segmentation_results``` or ```data_project2/segmentation_results``` depending on the database used.
+
+# Clustering
+# Solving the puzzle
 ## Installation
 - Clone the repo
 
@@ -15,30 +23,15 @@ conda activate iar_project
 ```bash
 pip install poetry
 ```
-- install the modul and set up the precommit
+- Install the modul and set up the precommit
 ```bash
 poetry install
 pre-commit install
 poetry env info
 ```
+- Modifiy the project path in the file ```iar_project.py```
 
-## Managing dependancies
-- to add an dependancy with poetry for exemple numpy
 ```bash
-poetry add numpy
+#Path to the repository
+L:6 GENERAL_PATH = "/Users/jeanpaul/Documents/GitHub/iar_project"
 ```
-It would automatically install and udpate the pyproject.toml file. If you didn't specifie it, it would add it to the tool.poetry.dependencies.
-
-- to add an dependancy with poetry to a specific group
-```bash
-poetry add pytest --group test
-```
-It would automatically install and udpate the pyproject.toml file. The dependancie would be attached to the tool.poetry.dependcies.group.
-[More info about poetry](https://python-poetry.org/docs/managing-dependencies/#adding-a-dependency-to-a-group)
-
-## Pre-commit config
-Pre-commit hook are small software that are called when you do a git commit. Those hooks do several test on you code (formating, imports, etc. ). If not all the tests have been passed, the pre-commmit would not allow you to do the commit. You would have to resolve each of the error before beeing able to do the commit.
-
-Good pratrice with pre-commit :
-1) Git commit regularly
-2) Never git commit when you are in a rush
