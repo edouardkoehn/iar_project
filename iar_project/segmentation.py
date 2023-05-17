@@ -48,14 +48,17 @@ def clean_mask(mask, min_area=1000, max_area=1600):
     return boxes
 
 
-def extract_segemented_object(src_img, mask, src_image_number):
+def extract_segemented_object(src_img, mask, src_image_number, dataset_use=2):
     """Method for extracting the objects and saving them under segementation_results
     Args:   src_img: source image in RGB
             mask: Binary mask of the image
             src_image_number: index of the images
     return  None
     """
-    path_out = utils.check_output_segmentation_folder()
+    if dataset_use == 2:
+        path_out = utils.check_output_segmentation_folder(dataset_used=2)
+    else:
+        path_out = utils.check_output_segmentation_folder(dataset_used=1)
     # Split the source image
     src_b, src_g, src_r = cv2.split(src_img)
     # Find the contour in the mask
@@ -153,32 +156,29 @@ def filter_2(src_images):
 
 
 def filter_3(src_images):
-    train_data_hue = [
-        cv2.cvtColor(data, cv2.COLOR_BGR2HSV)[:, :, 0] for data in src_images
-    ]
-    threshold_h_28 = [
-        cv2.threshold(img, 28, 255, cv2.THRESH_BINARY)[1] for img in train_data_hue
-    ]
+    """Takes the list of images and return the filtered version in an array"""
+    train_data_b = [cv2.split(data)[2] for data in src_images]
+    canny = [cv2.Canny(data, 10, 50) for data in train_data_b]
     kernel = np.ones((5, 5), np.uint8)
-    threshold_h_28 = [
-        cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=3)
-        for img in threshold_h_28
+    close = [
+        cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=3) for img in canny
     ]
     mask_clean = [
-        draw_contours(img, clean_mask(img, min_area=15000, max_area=16384))
-        for img in threshold_h_28
+        draw_contours(img, clean_mask(img, min_area=14000, max_area=17000))
+        for img in close
     ]
     return mask_clean
 
 
 def filter_4(src_images):
+    """Takes the list of images and return the filtered version in an array"""
     train_data_hue = [
         cv2.cvtColor(data, cv2.COLOR_RGB2HSV)[:, :, 0] for data in src_images
     ]
     threshold_h = [
         cv2.threshold(img, 38, 255, cv2.THRESH_BINARY)[1] for img in train_data_hue
     ]
-    kernel = np.ones((6, 6), np.uint8)
+    kernel = np.ones((3, 3), np.uint8)
     thresholded_h = [
         cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=3)
         for img in threshold_h
@@ -191,29 +191,22 @@ def filter_4(src_images):
 
 
 def filter_5(src_images):
-    train_data_hue = [
-        cv2.cvtColor(data, cv2.COLOR_RGB2HSV)[:, :, 0] for data in src_images
+    """Takes the list of images and return the filtered version in an array"""
+    train_data_value = [
+        cv2.cvtColor(data, cv2.COLOR_RGB2HSV)[:, :, 2] for data in src_images
     ]
-    threshold_h = [
-        cv2.threshold(img, 0.1, 255, cv2.THRESH_BINARY)[1] for img in train_data_hue
+    threshold = [
+        cv2.threshold(img, 114, 255, cv2.THRESH_BINARY)[1] for img in train_data_value
     ]
-    kernel = np.ones((2, 2), np.uint8)
-    thresholded_h = [
-        cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=3)
-        for img in threshold_h
-    ]
-    thresholded_h = [
-        cv2.threshold(img, 0.0, 255, cv2.THRESH_BINARY_INV)[1] for img in thresholded_h
-    ]
-
     mask_clean = [
         draw_contours(img, clean_mask(img, min_area=15000, max_area=16384))
-        for img in thresholded_h
+        for img in threshold
     ]
     return mask_clean
 
 
 def filter_6(src_images):
+    """Takes the list of images and return the filtered version in an array"""
     train_data_blue = [cv2.split(data)[2] for data in src_images]
 
     train_data_red = [cv2.split(data)[0] for data in src_images]
@@ -244,6 +237,7 @@ def filter_6(src_images):
 
 
 def filter_7(src_images):
+    """Takes the list of images and return the filtered version in an array"""
     train_data_blue = [cv2.split(data)[2] for data in src_images]
     threshold_blue = [
         cv2.threshold(img, 125, 255, cv2.THRESH_BINARY)[1] for img in train_data_blue
@@ -260,7 +254,65 @@ def filter_7(src_images):
     return mask_clean
 
 
+def filter_8(src_images):
+    """Takes the list of images and return the filtered version in an array"""
+    train_data_gray = [cv2.cvtColor(data, cv2.COLOR_RGB2GRAY) for data in src_images]
+    canny = [cv2.Canny(data, 20, 70) for data in train_data_gray]
+    kernel = np.ones((5, 5), np.uint8)
+    close = [
+        cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=3) for img in canny
+    ]
+    mask_clean = [
+        draw_contours(img, clean_mask(img, min_area=15000, max_area=20000))
+        for img in close
+    ]
+    return mask_clean
+
+
+def filter_9(src_images):
+    """Takes the list of images and return the filtered version in an array"""
+    train_data_r = [cv2.split(data)[0] for data in src_images]
+    threshold_low = [
+        cv2.threshold(img, 113, 255, cv2.THRESH_BINARY)[1] for img in train_data_r
+    ]
+    threshold_high = [
+        cv2.threshold(img, 230, 255, cv2.THRESH_BINARY)[1] for img in train_data_r
+    ]
+    threshold = [low - high for low, high in zip(threshold_low, threshold_high)]
+    threshold = [
+        cv2.threshold(img, 100, 255, cv2.THRESH_BINARY_INV)[1] for img in threshold
+    ]
+    canny = [cv2.Canny(data, 10, 20) for data in threshold]
+    kernel = np.ones((5, 5), np.uint8)
+    close = [
+        cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=3) for img in canny
+    ]
+    mask_clean = [
+        draw_contours(img, clean_mask(img, min_area=13000, max_area=20000))
+        for img in close
+    ]
+    return mask_clean
+
+
+def compute_segementation_filters(src_images):
+    """Method for computing all the segmentation masks"""
+    mask = []
+    M1 = filter_1(src_images)
+    M2 = filter_2(src_images)
+    M3 = filter_3(src_images)
+    M4 = filter_4(src_images)
+    M5 = filter_5(src_images)
+    M6 = filter_6(src_images)
+    M7 = filter_7(src_images)
+    M8 = filter_8(src_images)
+    M9 = filter_9(src_images)
+    for f1, f2, f3, f4, f5, f6, f7, f8, f9 in zip(M1, M2, M3, M4, M5, M6, M7, M8, M9):
+        mask.append(f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8)
+    return mask
+
+
 def plot_mask(images, masks, title="Test"):
+    """Method for plotting the masks on the raw imagess"""
     plt.figure(figsize=(20, 7))
     plt.suptitle(title)
 
@@ -270,8 +322,8 @@ def plot_mask(images, masks, title="Test"):
         g = g * mask
         b = b * mask
         color_img = cv2.merge([r, g, b])
-        plt.title(f"img {ind-1}")
         plt.subplot(2, 8, ind + 1)
+        plt.title(f"img {ind}")
         plt.imshow(color_img, cmap="gray")
         plt.axis("off")
     plt.tight_layout()
@@ -279,41 +331,38 @@ def plot_mask(images, masks, title="Test"):
 
 
 def plot_mask2(images, masks, title="Test"):
-    plt.figure(figsize=(20, 7))
+    """Method for plotting the masks on the raw imagess"""
+    plt.figure(figsize=(20, 8))
     plt.suptitle(title)
-
-    for img, mask, ind in zip(images, masks, np.arange(15)):
+    for img, mask, ind in zip(images, masks, np.arange(12)):
         b, g, r = cv2.split(img)
         r = r * mask
         g = g * mask
         b = b * mask
         color_img = cv2.merge([r, g, b])
-        plt.title(f"img {ind-1}")
-        plt.subplot(2, 8, ind + 1)
+        plt.subplot(2, 6, ind + 1)
+        plt.title(f"img {ind}")
         plt.imshow(color_img, cmap="gray")
         plt.axis("off")
     plt.tight_layout()
+    plt.show()
 
 
-# import iar_project.utils as utils
-# train_data=utils.import_train2()
-# plt.figure()
-# mask_none=[np.ones_like(train_data[0][:,:,1]) for i in range(11)]
-# plot_mask2(train_data,mask_none)
+def plot_comparison(images, masks, title="Comparison"):
+    """Method for plotting the mask against the raw image"""
+    fig, axs = plt.subplots(nrows=2, ncols=12, figsize=(20, 3))
+    for img, mask, ind in zip(images, masks, np.arange(15)):
+        b, g, r = cv2.split(img)
+        r = r * mask
+        g = g * mask
+        b = b * mask
+        color_img = cv2.merge([g, r, b])
 
-# M1=filter_1(train_data)
-# M2=filter_2(train_data)
-# M3=filter_3(train_data)
-# M4=filter_4(train_data)
-# M5=filter_5(train_data)
-# M6=filter_6(train_data)
-# M7=filter_7(train_data)
+        axs[0, ind].set_title(f"img {ind}")
+        axs[0, ind].imshow(color_img, cmap="gray")
+        axs[0, ind].axis("off")
 
-# mask=[]
-# for a,b,c,d,e,f,g in zip(M1,M2,M3,M4,M5,M6,M7):
-#      mask.append(a+b+c+d+e+f+g)
-# plt.figure('seg')
-# plot_mask(train_data,mask)
-# plt.show()
-# for i in range(0,15):
-#     extract_segemented_object(train_data[i],mask[i],i)
+        axs[1, ind].imshow(img)
+        axs[1, ind].axis("off")
+    plt.tight_layout()
+    plt.show()
