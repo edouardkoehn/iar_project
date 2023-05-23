@@ -1,13 +1,17 @@
+import glob
 import os
 
 import cv2
 import numpy as np
 
-GENERAL_PATH = "/Users/edouardkoehn/Documents/GitHub/iar_project"
+GENERAL_PATH = (
+    "/Users/begue/OneDrive/Documents/EPFL/Master/Cours/MA2/IAPR/projet/iar_project"
+)
 DATA_PATH = GENERAL_PATH + "/data_project"
 DATA_PATH2 = GENERAL_PATH + "/data_project2"
 SEGMENTATION_OUTPUT_PATH = DATA_PATH + "/segmentation_results"
 SEGMENTATION_OUTPUT_PATH2 = DATA_PATH2 + "/segmentation_results"
+SOL_OUTPUT_PATH2 = DATA_PATH2 + "/train2_solutions"
 
 
 def import_train():
@@ -45,6 +49,39 @@ def import_train2():
         else:
             print(f"Image {img_name} not found.")
             print(img_path)
+    return img_list
+
+
+def import_seg_results(nb_im):
+    """Method for loading the segmentation results"""
+    img_list = []
+    for i in range(0, nb_im):
+        seg_path = SEGMENTATION_OUTPUT_PATH2 + "/" + str(i) + "_" + "*.png"
+        tmp = []
+        for filename in glob.glob(seg_path):
+            if os.path.exists(filename):
+                img = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
+                img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+                tmp.append(img)
+            else:
+                print(f"Image {filename} not found.")
+                print(filename)
+        img_list.append(tmp)
+    return img_list
+
+
+def import_solution():
+    """Method for loading the segmentation results"""
+    img_list = []
+    seg_path = SOL_OUTPUT_PATH2 + "/solution" + "*.png"
+    for filename in glob.glob(seg_path):
+        if os.path.exists(filename):
+            img = cv2.imread(filename, cv2.IMREAD_UNCHANGED)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img_list.append(img)
+        else:
+            print(f"Image {filename} not found.")
+            print(filename)
     return img_list
 
 
