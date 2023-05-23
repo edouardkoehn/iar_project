@@ -66,7 +66,7 @@ def extract_segemented_object(src_img, mask, src_image_number, dataset_use=2):
 
     ind = 0
     for c in contours:
-        if len(c) > 100:
+        if len(c) > 1:
             # Create the rectrangle
             rectangleArea = cv2.minAreaRect(c)
             angle = int(rectangleArea[2])
@@ -108,13 +108,14 @@ def extract_segemented_object(src_img, mask, src_image_number, dataset_use=2):
                     center[0] - 64 : center[0] + 64, center[1] - 64 : center[1] + 64
                 ]
             # Fuse the channel
-
             segemented = cv2.merge([cropped_r, cropped_g, cropped_b])
 
             if segemented.shape[0] == 128:
                 export_file = f"{path_out}/{src_image_number}_{ind}.png"
                 cv2.imwrite(export_file, segemented)
                 ind += 1
+        else:
+            print()
     return
 
 
