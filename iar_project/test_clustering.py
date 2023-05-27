@@ -1,9 +1,10 @@
 import cv2
-import features_extraction as extraction
 import matplotlib.pyplot as plt
 import numpy as np
-import utils as utils
 from sklearn.cluster import KMeans
+
+import iar_project.features_extraction as extraction
+import iar_project.utils as utils
 
 
 def norm_features(ft):

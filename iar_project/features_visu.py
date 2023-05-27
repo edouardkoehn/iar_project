@@ -16,7 +16,7 @@ seg = []
 for img in seg_img:
     img2 = []
     for tiles in img:
-        tilescrop = tiles[10:110, 10:110, :]
+        tilescrop = tiles[10:118, 10:118, :]
         img2.append(tilescrop)
     seg.append(img2)
 
