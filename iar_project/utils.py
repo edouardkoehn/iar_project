@@ -12,6 +12,7 @@ DATA_PATH2 = GENERAL_PATH + "/data_project2"
 SEGMENTATION_OUTPUT_PATH = DATA_PATH + "/segmentation_results"
 SEGMENTATION_OUTPUT_PATH2 = DATA_PATH2 + "/segmentation_results"
 SOL_OUTPUT_PATH2 = DATA_PATH2 + "/train2_solutions"
+CLUSTERING_OUTPUT_PATH2 = DATA_PATH2 + "/clustering_results"
 
 
 def import_train():
@@ -52,10 +53,10 @@ def import_train2():
     return img_list
 
 
-def import_seg_results(nb_im):
+def import_seg_results(k, nb_im):
     """Method for loading the segmentation results"""
     img_list = []
-    for i in range(0, nb_im):
+    for i in range(k, nb_im):
         seg_path = SEGMENTATION_OUTPUT_PATH2 + "/" + str(i) + "_" + "*.png"
         tmp = []
         for filename in glob.glob(seg_path):
@@ -91,6 +92,17 @@ def check_output_segmentation_folder(dataset_used=2):
         path_out = SEGMENTATION_OUTPUT_PATH2
     else:
         path_out = SEGMENTATION_OUTPUT_PATH2
+    if not (os.path.exists(path_out)):
+        os.mkdir(path_out)
+    return path_out
+
+
+def check_output_clustering_folder(dataset_used=2):
+    """Method for creating the segmentation output folder"""
+    if dataset_used == 2:
+        path_out = CLUSTERING_OUTPUT_PATH2
+    else:
+        path_out = CLUSTERING_OUTPUT_PATH2
     if not (os.path.exists(path_out)):
         os.mkdir(path_out)
     return path_out
