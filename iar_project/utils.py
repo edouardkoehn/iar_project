@@ -53,6 +53,25 @@ def import_train2():
     return img_list
 
 
+def import_test(data_path, nb_images):
+    """Method for loading the test images and return them as a list"""
+    test_path = data_path
+    img_list = []
+    for i in range(nb_images):
+        img_name = (
+            f"test_{str(i).zfill(2)}.png"  # zfill() pads the number with leading zeros
+        )
+        img_path = os.path.join(test_path, img_name)
+        if os.path.exists(img_path):
+            img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            img_list.append(img)
+        else:
+            print(f"Image {img_name} not found.")
+            print(img_path)
+    return img_list
+
+
 def import_seg_results(k, nb_im):
     """Method for loading the segmentation results"""
     img_list = []
@@ -98,7 +117,7 @@ def check_output_segmentation_folder(dataset_used=2):
 
 
 def check_output_clustering_folder(dataset_used=2):
-    """Method for creating the segmentation output folder"""
+    """Method for creating the clustering output folder"""
     if dataset_used == 2:
         path_out = CLUSTERING_OUTPUT_PATH2
     else:

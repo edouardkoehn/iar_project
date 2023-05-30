@@ -308,7 +308,7 @@ def compute_segementation_filters(src_images):
     M8 = filter_8(src_images)
     M9 = filter_9(src_images)
     for f1, f2, f3, f4, f5, f6, f7, f8, f9 in zip(M1, M2, M3, M4, M5, M6, M7, M8, M9):
-        mask.append(f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8)
+        mask.append(f1 + f2 + f3 + f4 + f5 + f6 + f7 + f8 + f9)
     return mask
 
 

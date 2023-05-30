@@ -111,22 +111,28 @@ def get_features_gray(seg_img):
 def get_features_color(seg_img):
     img_features = []
     for img in seg_img:
-        features = np.zeros((len(img), 4))
+        features = np.zeros((len(img), 7))
         for i, til in enumerate(img):
             tile = til[10:118, 10:118, :]
             gray_im = cv2.cvtColor(tile, cv2.COLOR_RGB2GRAY)
             hsv_im = cv2.cvtColor(tile, cv2.COLOR_RGB2HSV)
             # features[i,0] = np.median(hsv_im[:,:,0])
             entropy_img1 = entropy(gray_im, disk(5))
-            # features[i,0] = np.std(entropy_img1)
+            entropy_img2 = entropy(gray_im, disk(2))
             features[i, 0] = np.median(entropy_img1)  # 5 7
-            # features[i,2] = np.std(entropy_img3)
-            features[i, 2] = np.median(tile[:, :, 1])  # 0 1 2
-            # features[i,1] = np.median(tile[:,:,2])
-            # features[i,2] = np.median(tile[:,:,0])
-            features[i, 1] = np.median(hsv_im[:, :, 2])  # 0 1 4 6
+            features[i, 3] = np.median(entropy_img2)
+            features[i, 2] = np.median(hsv_im[:, :, 2])  # 0 1 4 6
+            features[i, 1] = np.median(tile[:, :, 1])  # 0 1 2
+            features[i, 4] = np.std(hsv_im[:, :, 1])
+            features[i, 5] = np.mean(hsv_im[:, :, 1])
+
+            # features[i, 6] = np.mean(tile[:,:,2])
+            # features[i, 7] = np.mean(tile[:,:,0])
+            # features[i, 8] = np.mean(hsv_im[:, :, 0])
+
             dft_img = np.fft.rfft2(gray_im)
-            features[i, 3] = np.mean(np.abs(dft_img))
+            features[i, 6] = np.mean(np.abs(dft_img))
+
             # features[i,7] = np.min(gray_im)
             # features[i,8] = np.max(gray_im)
             # features[i,0] = np.std(gray_im)
@@ -144,6 +150,8 @@ def ft_PCA(ft, n_components=2):
     mean_ft = np.mean(ft, axis=0)
     std_ft = np.std(ft, axis=0)
     ft_norm = (ft - mean_ft) / std_ft
+    if np.any(np.isnan(ft_norm)):
+        ft_norm = np.nan_to_num(ft_norm)
     pca = PCA(n_components)
     ft_2D = pca.fit(ft_norm).transform(ft_norm)
     exp = pca.explained_variance_ratio_
