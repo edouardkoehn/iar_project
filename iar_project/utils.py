@@ -4,9 +4,7 @@ import os
 import cv2
 import numpy as np
 
-GENERAL_PATH = (
-    "/Users/begue/OneDrive/Documents/EPFL/Master/Cours/MA2/IAPR/projet/iar_project"
-)
+GENERAL_PATH = "/Users/edouardkoehn/Documents/GitHub/iar_project"
 DATA_PATH = GENERAL_PATH + "/data_project"
 DATA_PATH2 = GENERAL_PATH + "/data_project2"
 SEGMENTATION_OUTPUT_PATH = DATA_PATH + "/segmentation_results"

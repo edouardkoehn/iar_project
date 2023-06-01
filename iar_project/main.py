@@ -1,16 +1,13 @@
+import iar_project.clustering as clustering
 import iar_project.save_evaluation_files as save_eval
 import iar_project.segmentation as segmentation
-import iar_project.test_clustering as clustering
 import iar_project.utils as utils
 
-GENERAL_PATH = (
-    "/Users/begue/OneDrive/Documents/EPFL/Master/Cours/MA2/IAPR/projet/iar_project"
-)
-DATA_PATH = GENERAL_PATH + "/data_project2/test/"
-
+# General config for the pipeline
+GENERAL_PATH = "/Users/edouardkoehn/Documents/GitHub/iar_project"
+DATA_PATH = GENERAL_PATH + "/data_project2/test2/"
 group_ID = 19
 nb_images = 12
-
 
 # Load data
 data = utils.import_test(DATA_PATH, nb_images)

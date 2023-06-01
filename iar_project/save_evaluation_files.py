@@ -58,7 +58,7 @@ def export_solutions(image_index, solutions, path="data_project", group_id="00")
     if not os.path.isdir(saving_path):
         os.mkdir(saving_path)
 
-    print("saving solutions in folder: ", saving_path)
+    print("    Saving solutions in folder: ", saving_path)
 
     ## call functions to solve image_loaded
     save_mask(image_index, solutions[0], saving_path)
