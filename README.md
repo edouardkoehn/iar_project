@@ -19,6 +19,7 @@ pip install poetry
 3) Install the dependancies
 ```bash
 poetry install
+pip install tensorflow==2.12.0
 ```
 4) Modifiy the project path in the file ```/iar_project/utils.py```
 
@@ -72,5 +73,36 @@ From the segmentation mask, we extract the object and save them as single png fi
 All the source code for the segementation is contained in the file  ```iar_project/segementation.py```
 
 ## 2) Feature extraction
+We extract the following 7 features from the images:
+Shape:
+- Entropy median with two different radii
+- Mean of the power spectrum of the gray scale DFT
+
+Pixel intensity:
+- Median Value in the HSV space
+- Mean Saturation in the HSV space
+- Std Saturation channel in the HSV space
+- Median green channel in the RGB space
+
+The goal was to keep the number of features at the minimum and hence focus more on the quality than the quantity. As it can be seen on the following figure, for some images, only one feature is already enough to separate the tiles in the feature space.
+
+<p align="center">
+<img src=figures/fig_features1.png width=50%>
+</p>
+
+For other combination of tiles, 2 or more features are needed.
+
+All the source code for the feature extraction is contained in the file  ```iar_project/features_extraction.py```
+
 ## 3) Clustering
+For the clustering, Kmeans is used and the following assumption are taken:
+
+- There are either 2 or 3 clusters of puzzle + 1 cluster of outlier
+- The puzzles are either 3x3, 3x4, 4x4
+- There are either 1, 2 or 3 outliers
+
+These assumptions define what is a "coherent result" of the clustering. Hence if the result of the clustering violates one of these assumption, the solution is discarded and a new clustering is done with other features. Our clustering strategy consists to test with K=4 and K=3 clusters while looping over the features first individually and then by pairs until finding a solution that is coherent. If no coherent solution is found, a PCA is applied on the 7 features and the 2 explaining the most variance are kept. If the result of the clustering after the PCA is still not coherent, a last iteration is done using all the features. Note that every time that the clustering is done with more than one feature, the features are first normalized.
+
+All the source code for the clustering is contained in the file  ```iar_project/clustering.py```
+
 ## 4) Solving the puzzle

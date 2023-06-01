@@ -1,5 +1,6 @@
 import numpy as np
 
+import iar_project.clustering as clustering
 import iar_project.CNN as cnn
 import iar_project.save_evaluation_files as save_eval
 import iar_project.segmentation as segmentation
