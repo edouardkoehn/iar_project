@@ -10,7 +10,9 @@ import numpy as np
 from PIL import Image
 
 
-def export_solutions(image_index, solutions, path="data_project", group_id="00"):
+def export_solutions(
+    image_index, solutions, path="data_project", group_id="00", CNN=False
+):
     """
     Wrapper funciton to load image and save solution
 
@@ -53,8 +55,11 @@ def export_solutions(image_index, solutions, path="data_project", group_id="00")
 
     Returns
     """
-
-    saving_path = os.path.join(path, "solutions_group_" + str(group_id))
+    if CNN:
+        folder_name = "solutions_CNN_group_"
+    else:
+        folder_name = "solutions_group_"
+    saving_path = os.path.join(path, folder_name + str(group_id))
     if not os.path.isdir(saving_path):
         os.mkdir(saving_path)
 
