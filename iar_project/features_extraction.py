@@ -120,9 +120,9 @@ def get_features_color(seg_img):
             entropy_img1 = entropy(gray_im, disk(5))
             entropy_img2 = entropy(gray_im, disk(2))
             features[i, 0] = np.median(entropy_img1)  # 5 7
-            features[i, 3] = np.median(entropy_img2)
-            features[i, 2] = np.median(hsv_im[:, :, 2])  # 0 1 4 6
             features[i, 1] = np.median(tile[:, :, 1])  # 0 1 2
+            features[i, 2] = np.median(hsv_im[:, :, 2])  # 0 1 4 6
+            features[i, 3] = np.median(entropy_img2)
             features[i, 4] = np.std(hsv_im[:, :, 1])
             features[i, 5] = np.mean(hsv_im[:, :, 1])
 

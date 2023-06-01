@@ -273,6 +273,18 @@ def filter_8(src_images):
 def filter_9(src_images):
     """Takes the list of images and return the filtered version in an array"""
     train_data_r = [cv2.split(data)[0] for data in src_images]
+    # fig, axs=plt.subplots(1,2, figsize=(8,3),num='Red channel' )
+    # axs[1].hist(train_data_r[2].ravel(), bins=256, density=True)
+    # axs[1].set_title('Histogram red channel')
+    # axs[1].set_ylabel('%')
+    # axs[1].vlines(113,0,0.07,color='red')
+    # axs[1].vlines(230,0,0.07,color='red')
+    # axs[0].imshow(train_data_r[2], cmap='gray')
+    # axs[0].set_title('Red channel')
+    # axs[0].axis('off')
+    # plt.tight_layout()
+    # plt.savefig('Red.png')
+
     threshold_low = [
         cv2.threshold(img, 113, 255, cv2.THRESH_BINARY)[1] for img in train_data_r
     ]
@@ -283,15 +295,44 @@ def filter_9(src_images):
     threshold = [
         cv2.threshold(img, 100, 255, cv2.THRESH_BINARY_INV)[1] for img in threshold
     ]
+
+    # fig, axs=plt.subplots(1,2, figsize=(8,3),num='Thresholded channel' )
+    # axs[1].hist(threshold[2].ravel(), bins=256, density=True)
+    # axs[1].set_title('Histogram thresholded')
+    # axs[1].set_ylabel('%')
+    # axs[0].imshow(threshold[2], cmap='gray')
+    # axs[0].set_title('Thresholded')
+    # axs[0].axis('off')
+    # plt.tight_layout()
+    # plt.savefig('Thresholded.png')
+
     canny = [cv2.Canny(data, 10, 20) for data in threshold]
+
     kernel = np.ones((5, 5), np.uint8)
     close = [
         cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=3) for img in canny
     ]
+
+    # fig, axs=plt.subplots(1,2, figsize=(8,3),num='Canny +Closing' )
+    # axs[0].imshow(canny[2],cmap='gray')
+    # axs[0].set_title('Canny')
+    # axs[0].axis('off')
+    # axs[1].imshow(threshold[2], cmap='gray')
+    # axs[1].set_title('Closing')
+    # axs[1].axis('off')
+    # plt.tight_layout()
+    # plt.savefig('Canny_Closing.png')
+
     mask_clean = [
         draw_contours(img, clean_mask(img, min_area=13000, max_area=20000))
         for img in close
     ]
+    # fig, axs=plt.subplots(1,1, figsize=(8,3),num='Final mask' )
+    # axs.imshow(mask_clean[2],cmap='gray')
+    # axs.set_title('Mask cleaned')
+    # axs.axis('off')
+    # plt.tight_layout()
+    # plt.savefig('Mask_clean.png')
     return mask_clean
 
 
@@ -367,3 +408,44 @@ def plot_comparison(images, masks, title="Comparison"):
         axs[1, ind].axis("off")
     plt.tight_layout()
     plt.show()
+
+
+# import iar_project.utils as utils
+# import matplotlib.pyplot as plt
+
+
+# train_data=utils.import_train2()
+# mask=compute_segementation_filters(train_data)
+# fig,axs=plt.subplots(2,3)
+# for i in range(3):
+#     axs[0,i].imshow(train_data[i], cmap='gray')
+#     axs[0,i].axis('off')
+
+# for i in range(3):
+#     axs[1,i].imshow(mask[i],cmap='gray')
+#     axs[1,i].axis('off')
+# plt.savefig('Seg_res')
+
+# M1=filter_8(train_data)
+# M4=filter_4(train_data)
+# M9=filter_9(train_data)
+
+# plt.figure('M1')
+# plt.imshow(M1[5], cmap='gray')
+# plt.axis('off')
+# plt.savefig('M1')
+
+# plt.figure('M4')
+# plt.imshow(M4[5], cmap='gray')
+# plt.axis('off')
+# plt.savefig('M4')
+
+# plt.figure('M5')
+# plt.imshow(M9[5], cmap='gray')
+# plt.axis('off')
+# plt.savefig('M5')
+
+# plt.figure('Res5')
+# plt.imshow(mask[1], cmap='gray')
+# plt.axis('off')
+# plt.savefig('res5')
