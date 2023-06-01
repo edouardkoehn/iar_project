@@ -15,6 +15,8 @@ group_ID = 19
 nb_images = 1
 DL = True
 
+# Check if CNN model exists
+utils.check_model_path()
 # Load data
 data = utils.import_test(DATA_PATH, nb_images)
 if not DL:

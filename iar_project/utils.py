@@ -14,6 +14,17 @@ SOL_OUTPUT_PATH2 = DATA_PATH2 + "/train2_solutions"
 CLUSTERING_OUTPUT_PATH2 = DATA_PATH2 + "/clustering_results"
 
 
+def check_model_path():
+    path = GENERAL_PATH + "/CNN_model"
+    if os.path.exists(path):
+        if len(os.listdir(path)) != 1:
+            print(f"ERROR: CNN model is missing in folder: {path}")
+            exit()
+    else:
+        print("ERROR: CNN model folder missing")
+        exit()
+
+
 def import_train():
     """Method for loading the train image and return them as a list  (dataset2)"""
 
