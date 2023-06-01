@@ -120,15 +120,16 @@ We implement a second algo for clustering based on CNN and it consist of 6 diffe
 ## 4) Solving the puzzle
 
 We used a genetic algorithm that was based on this code that we changed to use for our project. Here is the link: https://github.com/nemanja-m/gaps
-This algorithm is based on how genetic muted and the goal is to find an arrangement of puzzle pieces that forms a complete image. 
 
-To be quick, here are the main steps of the algo.
+This algorithm is based on how genetic muted and the goal is to find an arrangement of puzzle pieces that forms a complete image.
+
+Here are the main steps of the algorithm.
 
 - Initialization: Start with a population of randomly shuffled puzzle pieces.
-- Fitness Evaluation: Calculate a fitness score for each puzzle piece arrangement based on how well the pieces fit together. 
+- Fitness Evaluation: Calculate a fitness score for each puzzle piece arrangement based on how well the pieces fit together.
 - Analyse: Choose the best puzzle piece arrangements from the population based on their fitness scores.
-- Crossover: Combine the selected puzzle piece arrangements to create new offspring arrangements. 
-- Mutation: Introduce random changes or alterations to the genetic material of the puzzle piece arrangements. 
+- Crossover: Combine the selected puzzle piece arrangements to create new offspring arrangements.
+- Mutation: Introduce random changes or alterations to the genetic material of the puzzle piece arrangements.
 - Termination: Repeat steps 2-5 for a certain number of generations or until a specific fitness threshold is reached. This determines when the algorithm should stop.
 - Solution: Once the termination condition is met, the best puzzle piece arrangement found is returned as the solution to the jigsaw puzzle.
 
@@ -136,5 +137,10 @@ To be quick, here are the main steps of the algo.
 <img src=figures/fig_solver_0.png width=50%>
 </p>
 
+Authors:
 
+Axel Béguelin
 
+Edouard Koehn
+
+Benjamin Köffler
