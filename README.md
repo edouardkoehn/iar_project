@@ -129,8 +129,7 @@ To be quick, here are the main steps of the algo.
 - Analyse: Choose the best puzzle piece arrangements from the population based on their fitness scores.
 - Crossover: Combine the selected puzzle piece arrangements to create new offspring arrangements. 
 - Mutation: Introduce random changes or alterations to the genetic material of the puzzle piece arrangements. 
-- Fitness Evaluation: Calculate the fitness scores of the new offspring arrangements.
-- Termination: Repeat steps 3-6 for a certain number of generations or until a specific fitness threshold is reached. This determines when the algorithm should stop.
+- Termination: Repeat steps 2-5 for a certain number of generations or until a specific fitness threshold is reached. This determines when the algorithm should stop.
 - Solution: Once the termination condition is met, the best puzzle piece arrangement found is returned as the solution to the jigsaw puzzle.
 
 <p align="center">
