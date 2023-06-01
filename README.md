@@ -134,7 +134,7 @@ To be quick, here are the main steps of the algo.
 - Solution: Once the termination condition is met, the best puzzle piece arrangement found is returned as the solution to the jigsaw puzzle.
 
 <p align="center">
-<img src=figures/fig_solver.png width=75%>
+<img src=figures/fig_solver_0.png width=75%>
 </p>
 
 
