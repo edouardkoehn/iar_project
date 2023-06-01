@@ -119,8 +119,9 @@ We implement a second algo for clustering based on CNN and it consist of 6 diffe
 
 ## 4) Solving the puzzle
 
-We used a genetic algorithm that was based on this code that we changed to use for our project. Here is the link: https://github.com/nemanja-m/gaps
-This algorithm is based on how genetic muted and the goal is to find an arrangement of puzzle pieces that forms a complete image. 
+We used a genetic algorithm that was based on a code that we changed to use for our project. Here is the link: https://github.com/nemanja-m/gaps
+
+This algorithm is based on how genetic mute and the goal is to find an arrangement of puzzle pieces that forms a complete image. 
 
 To be quick, here are the main steps of the algo.
 
