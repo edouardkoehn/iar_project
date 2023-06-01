@@ -10,9 +10,8 @@ from sklearn.utils import shuffle
 from tensorflow.keras.layers import Conv2D, Dense, Flatten, MaxPooling2D
 from tensorflow.keras.models import Sequential, load_model, save_model
 
-GENERAL_PATH = (
-    "/Users/begue/OneDrive/Documents/EPFL/Master/Cours/MA2/IAPR/projet/iar_project"
-)
+from iar_project.utils import GENERAL_PATH
+
 DATA_PATH = GENERAL_PATH + "/data_project2/"
 MODEL_PATH = GENERAL_PATH + "/CNN_model/"
 

@@ -7,8 +7,9 @@ import iar_project.utils as utils
 
 # General config for the pipeline
 DATA_PATH = utils.GENERAL_PATH + "/data_project2/test2/"
+OUTPUT_PATH = utils.GENERAL_PATH + "/data_project2/"
 group_ID = 19
-nb_images = 1
+nb_images = 12
 DL = True
 
 # Load data
@@ -34,7 +35,7 @@ if not DL:
         solution.append(puzzles)
 
         # Export solution
-        save_eval.export_solutions(i, solution, path=DATA_PATH, group_id=group_ID)
+        save_eval.export_solutions(i, solution, path=OUTPUT_PATH, group_id=group_ID)
 
 else:
     for i, im in enumerate(data):
@@ -47,5 +48,5 @@ else:
         solution.append(clusters)
         solution.append(np.ones((2, 2)))
         save_eval.export_solutions(
-            i, solution, path=DATA_PATH, group_id=group_ID, CNN=DL
+            i, solution, path=OUTPUT_PATH, group_id=group_ID, CNN=DL
         )
