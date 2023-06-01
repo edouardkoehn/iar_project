@@ -63,7 +63,7 @@ def export_solutions(
     if not os.path.isdir(saving_path):
         os.mkdir(saving_path)
 
-    print("saving solutions in folder: ", saving_path)
+    print("    Saving solutions in folder: ", saving_path)
 
     ## call functions to solve image_loaded
     save_mask(image_index, solutions[0], saving_path)

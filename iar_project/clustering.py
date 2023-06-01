@@ -2,45 +2,32 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
 
 import iar_project.features_extraction as extraction
-import iar_project.utils as utils
+
+
+def ft_PCA(ft, n_components=2):
+    """Method for extracting the first two component of the PCA on the
+    features matrix"""
+    ft_norm = norm_features(ft)
+    pca = PCA(n_components)
+    ft_2D = pca.fit(ft_norm).transform(ft_norm)
+    exp = pca.explained_variance_ratio_
+    return ft_2D[:, 0:2], exp
 
 
 def norm_features(ft):
-    mean_ft = np.mean(ft, axis=0)
-    std_ft = np.std(ft, axis=0)
-    ft_norm = (ft - mean_ft) / std_ft
-    if np.any(np.isnan(ft_norm)):
-        ft_norm = np.nan_to_num(ft_norm)
-        # print(ft_norm)
-
+    """Method for normalizing the data (z-score)
+    x_norm= (x-mean)/std"""
+    scaler = StandardScaler().fit(ft)
+    ft_norm = scaler.transform(ft)
     return ft_norm
 
 
-def pca_loop(ft, tresh):
-    exp = 0
-    nb_comp = 0
-    while np.sum(exp) < tresh:
-        nb_comp += 1
-        ft_reduced, exp = extraction.ft_PCA(ft[0], nb_comp)
-
-    return ft_reduced
-
-
-def return_color_or_gray(tiles):
-    idx_gray = []
-    idx_color = []
-    for t, tile in enumerate(tiles):
-        if (tile[40:80, 40:80, 0] == tile[40:80, 40:80, 1]).all():
-            idx_gray.append(t)
-        else:
-            idx_color.append(t)
-
-    return idx_color, idx_gray
-
-
 def test_KMeans(STATE, img_test, ft, K=3):
+    """Method for checking if the produced clustets are coherent"""
     clustered_puzzle = []
     STATE = True
 
@@ -80,6 +67,7 @@ def test_KMeans(STATE, img_test, ft, K=3):
 
 
 def clustering(seg_img, im_i, nb_ft):
+    """Pipeline for the feature selection and the clustering"""
     clu_img = []
     clu_labels = []
     for imID, img_test in enumerate(seg_img):
@@ -90,12 +78,14 @@ def clustering(seg_img, im_i, nb_ft):
         STATE = False
         k = 4
         p = 0
-        compo = 2
+        compo = 7
         while not STATE:
             if p <= nb_ft - 1:
+                print(f"    Trying Kmeans 1 feature:    K={k}   f_{p}")
                 ft = ft_raw[:, p : (p + 1)]
                 clu, clu_lab, STATE = test_KMeans(STATE, img_test, ft, K=k)
                 if not STATE and p <= nb_ft - 2:
+                    print(f"    Trying Kmeans 2 features:   K={k}   f_{p,p+1}")
                     ft = ft_norm[:, p : (p + 2)]
                     clu, clu_lab, STATE = test_KMeans(STATE, img_test, ft, K=k)
                     if STATE:
@@ -104,19 +94,20 @@ def clustering(seg_img, im_i, nb_ft):
                 if k < 3:
                     p += 1
                     k = 4
-            elif compo <= nb_ft and p > nb_ft - 1:
-                # print("PCA")
-                ft, exp = extraction.ft_PCA(ft_raw, compo)
+            elif compo == nb_ft and p > nb_ft - 1:
+                print(f"    Trying PCA 7 features:      K={k}   ")
+                ft, exp = ft_PCA(ft_raw, compo)
                 clu, clu_lab, STATE = test_KMeans(STATE, img_test, ft, K=k)
                 k -= 1
                 if k < 3:
                     compo += 1
                     k = 4
             else:
+                print("    Trying Kmeans on all features...")
                 ft = ft_norm
                 clu, clu_lab, STATE = test_KMeans(STATE, img_test, ft, K=4)
                 if not STATE:
-                    print(f"No solution for image {im_i}")
+                    print(f"    No solution for image {im_i}")
                     break
 
         clu_img.append(clu)
@@ -126,6 +117,7 @@ def clustering(seg_img, im_i, nb_ft):
 
 
 def save_puzzles(img, path_out, i):
+    """Method for saving the puzzles tiles"""
     IMG_SIZE = 128
     image1 = []
     outlier = []
@@ -214,6 +206,7 @@ def save_puzzles(img, path_out, i):
 
 
 def plot_clustering_results(clu_img, sizefig, lon):
+    """Utils method for plotting the clustering"""
     for imID, img in enumerate(clu_img):
         fig, axs = plt.subplots(len(img), lon, figsize=sizefig)
         fig.suptitle(f"Image_{imID}")
@@ -231,24 +224,3 @@ def plot_clustering_results(clu_img, sizefig, lon):
 
             plt.tight_layout()
     plt.show()
-
-
-if __name__ == "__main__":
-
-    # How many images ?
-    nb_im = 1
-    k = 0  # from which image
-    seg_img = utils.import_seg_results(k, nb_im)
-    sol_img = utils.import_solution()
-    sol_img = [sol_img]
-    plot = False
-    IMG_SIZE = 128
-
-    clu_img, clu_labels, features = clustering(seg_img, 1, nb_ft=7)
-
-    path_out = utils.check_output_clustering_folder(dataset_used=2)
-
-    # save_puzzles(clu_img, path_out)
-
-    if plot:
-        plot_clustering_results(clu_img, sizefig=(14, 8), lon=16)

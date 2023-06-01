@@ -1,5 +1,3 @@
-import os
-
 import cv2
 import matplotlib.pyplot as plt
 import numpy as np
@@ -120,7 +118,11 @@ def extract_segemented_object(src_img, mask, src_image_number, dataset_use=2):
 
 
 def filter_1(src_imgages):
-    """Takes the list of images and return the filtered version in an array"""
+    """Takes the list of images and return the filtered version in an array
+    - Thresholding: Hue
+    - Canny: None
+    - Morphological: None
+    """
     train_data_hue = [
         cv2.cvtColor(data, cv2.COLOR_BGR2HSV)[:, :, 0] for data in src_imgages
     ]
@@ -136,7 +138,11 @@ def filter_1(src_imgages):
 
 
 def filter_2(src_images):
-    """Takes the list of images and return the filtered version in an array"""
+    """Takes the list of images and return the filtered version in an array
+    - Thresholding: Value
+    - Canny: None
+    - Morphological: Closing
+    """
     train_data_v = [
         cv2.cvtColor(data, cv2.COLOR_BGR2HSV)[:, :, 2] for data in src_images
     ]
@@ -157,7 +163,11 @@ def filter_2(src_images):
 
 
 def filter_3(src_images):
-    """Takes the list of images and return the filtered version in an array"""
+    """Takes the list of images and return the filtered version in an array
+    - Thresholding: None
+    - Canny: Yes
+    - Morphological: Closing
+    """
     train_data_b = [cv2.split(data)[2] for data in src_images]
     canny = [cv2.Canny(data, 10, 50) for data in train_data_b]
     kernel = np.ones((5, 5), np.uint8)
@@ -172,7 +182,11 @@ def filter_3(src_images):
 
 
 def filter_4(src_images):
-    """Takes the list of images and return the filtered version in an array"""
+    """Takes the list of images and return the filtered version in an array
+    - Thresholding: Hue
+    - Canny: None
+    - Morphological: Closing
+    """
     train_data_hue = [
         cv2.cvtColor(data, cv2.COLOR_RGB2HSV)[:, :, 0] for data in src_images
     ]
@@ -192,7 +206,11 @@ def filter_4(src_images):
 
 
 def filter_5(src_images):
-    """Takes the list of images and return the filtered version in an array"""
+    """Takes the list of images and return the filtered version in an array
+    - Thresholding: Hue
+    - Canny: None
+    - Morphological: None
+    """
     train_data_value = [
         cv2.cvtColor(data, cv2.COLOR_RGB2HSV)[:, :, 2] for data in src_images
     ]
@@ -207,7 +225,11 @@ def filter_5(src_images):
 
 
 def filter_6(src_images):
-    """Takes the list of images and return the filtered version in an array"""
+    """Takes the list of images and return the filtered version in an array
+    - Thresholding: Red, Blue
+    - Canny: None
+    - Morphological: Open,Close
+    """
     train_data_blue = [cv2.split(data)[2] for data in src_images]
 
     train_data_red = [cv2.split(data)[0] for data in src_images]
@@ -238,7 +260,11 @@ def filter_6(src_images):
 
 
 def filter_7(src_images):
-    """Takes the list of images and return the filtered version in an array"""
+    """Takes the list of images and return the filtered version in an array
+    - Thresholding:  Blue
+    - Canny: None
+    - Morphological: Close
+    """
     train_data_blue = [cv2.split(data)[2] for data in src_images]
     threshold_blue = [
         cv2.threshold(img, 125, 255, cv2.THRESH_BINARY)[1] for img in train_data_blue
@@ -256,7 +282,11 @@ def filter_7(src_images):
 
 
 def filter_8(src_images):
-    """Takes the list of images and return the filtered version in an array"""
+    """Takes the list of images and return the filtered version in an array
+    - Thresholding:  None
+    - Canny: Yes
+    - Morphological: Close
+    """
     train_data_gray = [cv2.cvtColor(data, cv2.COLOR_RGB2GRAY) for data in src_images]
     canny = [cv2.Canny(data, 20, 70) for data in train_data_gray]
     kernel = np.ones((5, 5), np.uint8)
@@ -271,7 +301,11 @@ def filter_8(src_images):
 
 
 def filter_9(src_images):
-    """Takes the list of images and return the filtered version in an array"""
+    """Takes the list of images and return the filtered version in an array
+    - Thresholding:  Red
+    - Canny: Yes
+    - Morphological: Close
+    """
     train_data_r = [cv2.split(data)[0] for data in src_images]
     threshold_low = [
         cv2.threshold(img, 113, 255, cv2.THRESH_BINARY)[1] for img in train_data_r
