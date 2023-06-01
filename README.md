@@ -115,4 +115,27 @@ These assumptions define what is a "coherent result" of the clustering. Hence if
 
 All the source code for the clustering is contained in the file  ```iar_project/clustering.py```
 
+We implement a second algo for clustering based on CNN and it consist of 6 different layers that separate all images in labels. Give a puzzle piece as input, and it gives the label associate as output. You can find the code to train it as a notebook in the file CNN_train.
+
 ## 4) Solving the puzzle
+
+We used a genetic algorithm that was based on this code that we changed to use for our project. Here is the link: https://github.com/nemanja-m/gaps
+This algorithm is based on how genetic muted and the goal is to find an arrangement of puzzle pieces that forms a complete image. 
+
+To be quick, here are the main steps of the algo.
+
+- Initialization: Start with a population of randomly shuffled puzzle pieces.
+- Fitness Evaluation: Calculate a fitness score for each puzzle piece arrangement based on how well the pieces fit together. 
+- Analyse: Choose the best puzzle piece arrangements from the population based on their fitness scores.
+- Crossover: Combine the selected puzzle piece arrangements to create new offspring arrangements. 
+- Mutation: Introduce random changes or alterations to the genetic material of the puzzle piece arrangements. 
+- Fitness Evaluation: Calculate the fitness scores of the new offspring arrangements.
+- Termination: Repeat steps 3-6 for a certain number of generations or until a specific fitness threshold is reached. This determines when the algorithm should stop.
+- Solution: Once the termination condition is met, the best puzzle piece arrangement found is returned as the solution to the jigsaw puzzle.
+
+<p align="center">
+<img src=figures/fig_solver.png width=75%>
+</p>
+
+
+
