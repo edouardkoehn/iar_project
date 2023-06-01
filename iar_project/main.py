@@ -79,7 +79,7 @@ else:
         for unsolved_puzzle, ind in zip(
             unsolved_puzzles, np.arange(0, len(unsolved_puzzles))
         ):
-            print(f"Solving puzzle _{i}_{ind}")
+            print(f"        Solving puzzle _{i}_{ind}")
             solved_puzzles.append(
                 solving.solve_puzzle(
                     unsolved_puzzle,
