@@ -24,12 +24,13 @@ pip install tensorflow==2.12.0
 5) Modifiy the project path in the file ```/iar_project/utils.py```
 
 ```bash
-
-6) Download the model for the CNN from https://drive.google.com/file/d/1-KgZ9ay6BIJjkRLsIsWJdCh0ZAHiwfpz/view, and place it under the folder CNN_model at the root of the repository.
-
 #Path to the repository
 L:7 GENERAL_PATH = "/Users/jeanpaul/Documents/GitHub/iar_project"
 ```
+
+6) Download the model for the CNN from https://drive.google.com/file/d/1-KgZ9ay6BIJjkRLsIsWJdCh0ZAHiwfpz/view, and place it under the folder CNN_model at the root of the repository.
+
+
 # Running the pipeline
 The complete pipelin run with a single script :```/iar_project/main.py```. This script run the following steps:
 1) Import the data
@@ -39,6 +40,11 @@ The complete pipelin run with a single script :```/iar_project/main.py```. This 
 5) Solve the puzzle
 
 First, follow the installation instructions. Then, verify that you modify the path to the repository (see Installation_part4).
+We implemented two clustering algorithms (with a CNN or pure Image processing). You can select which one you want to use by setting the variable DL in main.py.
+```bash
+l16: DL = True # True = CNN algorithm, False = Standard clustering with Kmeans
+```
+
 
 To run the code, go to the root of the repository and then call the script:
 ```bash
@@ -91,7 +97,7 @@ Pixel intensity:
 The goal was to keep the number of features at the minimum and hence focus more on the quality than the quantity. As it can be seen on the following figure, for some images, only one feature is already enough to separate the tiles in the feature space.
 
 <p align="center">
-<img src=figures/fig_features1.png width=50%>
+<img src=figures/fig_features1.png width=75%>
 </p>
 
 For other combination of tiles, 2 or more features are needed.
