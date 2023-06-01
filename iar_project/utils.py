@@ -124,3 +124,16 @@ def check_output_clustering_folder(dataset_used=2):
     if not (os.path.exists(path_out)):
         os.mkdir(path_out)
     return path_out
+
+
+def load_unsolved_images(index_image, n_cluster):
+    unsolved_images = []
+    for i in range(n_cluster):
+        path = f"{CLUSTERING_OUTPUT_PATH2}/solution_{str(index_image).zfill(2)}_{str(i).zfill(2)}.png"
+        if os.path.exists(path):
+            img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            unsolved_images.append(img)
+        else:
+            print(f"Image {path} not found.")
+    return unsolved_images
