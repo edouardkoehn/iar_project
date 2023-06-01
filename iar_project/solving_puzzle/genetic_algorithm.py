@@ -12,8 +12,15 @@ from solving_puzzle.selection import roulette_selection
 
 
 class GeneticAlgorithm(object):
-
-    def __init__(self, image, piece_size, population_size, generations, termination_threshold, elite_size=2):
+    def __init__(
+        self,
+        image,
+        piece_size,
+        population_size,
+        generations,
+        termination_threshold,
+        elite_size=2,
+    ):
         self._image = image
         self._piece_size = piece_size
         self._generations = generations
@@ -28,7 +35,7 @@ class GeneticAlgorithm(object):
         self.termination_threshold = termination_threshold
 
     def start_evolution(self, verbose):
-        print("=== Pieces:      {}\n".format(len(self._pieces)))
+        # print("=== Pieces:      {}\n".format(len(self._pieces)))
 
         if verbose:
             plot = Plot(self._image)
@@ -40,9 +47,9 @@ class GeneticAlgorithm(object):
         termination_counter = 0
 
         for generation in range(self._generations):
-            print_progress(
-                generation, self._generations - 1, prefix="=== Solving puzzle: "
-            )
+            # print_progress(
+            #     generation, self._generations - 1, prefix="=== Solving puzzle: "
+            # )
 
             new_population = []
 
@@ -68,12 +75,12 @@ class GeneticAlgorithm(object):
                 best_fitness_score = fittest.fitness
 
             if termination_counter == self.termination_threshold:
-                print("\n\n=== GA terminated")
-                print(
-                    "=== There was no improvement for {} generations".format(
-                        self.termination_threshold
-                    )
-                )
+                # #print("\n\n=== GA terminated")
+                # #print(
+                #     "=== There was no improvement for {} generations".format(
+                #         self.termination_threshold
+                #     )
+                # )
                 return fittest
 
             self._population = new_population

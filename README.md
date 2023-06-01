@@ -7,25 +7,30 @@ All the required documentation of the repository is contain in this README.
 ```bash
 git clone https://github.com/edouardkoehn/iar_project.git
 ```
-- Create your virtual env
+2) Create your virtual env
 ```bash
 conda create -n iar_project python=3
 conda activate iar_project
 ```
-2) Install poetry (all the dependencies managnement was done using [Poetry](https://python-poetry.org/))
+3) Install poetry (all the dependencies managnement was done using [Poetry](https://python-poetry.org/))
 ```bash
 pip install poetry
 ```
-3) Install the dependancies
+4) Install the dependancies
 ```bash
 poetry install
+pip install tensorflow==2.12.0
 ```
-4) Modifiy the project path in the file ```/iar_project/utils.py```
+5) Modifiy the project path in the file ```/iar_project/utils.py```
 
 ```bash
 #Path to the repository
 L:7 GENERAL_PATH = "/Users/jeanpaul/Documents/GitHub/iar_project"
 ```
+
+6) Download the model for the CNN from https://drive.google.com/file/d/1-KgZ9ay6BIJjkRLsIsWJdCh0ZAHiwfpz/view, and place it under the folder CNN_model at the root of the repository.
+
+
 # Running the pipeline
 The complete pipelin run with a single script :```/iar_project/main.py```. This script run the following steps:
 1) Import the data
@@ -35,6 +40,11 @@ The complete pipelin run with a single script :```/iar_project/main.py```. This 
 5) Solve the puzzle
 
 First, follow the installation instructions. Then, verify that you modify the path to the repository (see Installation_part4).
+We implemented two clustering algorithms (with a CNN or pure Image processing). You can select which one you want to use by setting the variable DL in main.py.
+```bash
+l16: DL = True # True = CNN algorithm, False = Standard clustering with Kmeans
+```
+
 
 To run the code, go to the root of the repository and then call the script:
 ```bash
@@ -72,5 +82,37 @@ From the segmentation mask, we extract the object and save them as single png fi
 All the source code for the segementation is contained in the file  ```iar_project/segementation.py```
 
 ## 2) Feature extraction
+We extract the following 7 features from the images:
+
+Shape:
+- Entropy median with two different radii
+- Mean of the power spectrum of the gray scale DFT
+
+Pixel intensity:
+- Median Value in the HSV space
+- Mean Saturation in the HSV space
+- Std Saturation channel in the HSV space
+- Median green channel in the RGB space
+
+The goal was to keep the number of features at the minimum and hence focus more on the quality than the quantity. As it can be seen on the following figure, for some images, only one feature is already enough to separate the tiles in the feature space.
+
+<p align="center">
+<img src=figures/fig_features1.png width=75%>
+</p>
+
+For other combination of tiles, 2 or more features are needed.
+
+All the source code for the feature extraction is contained in the file  ```iar_project/features_extraction.py```
+
 ## 3) Clustering
+For the clustering, Kmeans is used and the following assumption are taken:
+
+- There are either 2 or 3 clusters of puzzle + 1 cluster of outlier
+- The puzzles are either 3x3, 3x4, 4x4
+- There are either 1, 2 or 3 outliers
+
+These assumptions define what is a "coherent result" of the clustering. Hence if the result of the clustering violates one of these assumption, the solution is discarded and a new clustering is done with other features. Our clustering strategy consists to test with K=4 and K=3 clusters while looping over the features first individually and then by pairs until finding a solution that is coherent. If no coherent solution is found, a PCA is applied on the 7 features and the 2 explaining the most variance are kept. If the result of the clustering after the PCA is still not coherent, a last iteration is done using all the features. Note that every time that the clustering is done with more than one feature, the features are first normalized.
+
+All the source code for the clustering is contained in the file  ```iar_project/clustering.py```
+
 ## 4) Solving the puzzle

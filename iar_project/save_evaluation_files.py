@@ -63,7 +63,7 @@ def export_solutions(
     if not os.path.isdir(saving_path):
         os.mkdir(saving_path)
 
-    print("    Saving solutions in folder: ", saving_path)
+    print("         Saving solutions in folder: ", saving_path)
 
     ## call functions to solve image_loaded
     save_mask(image_index, solutions[0], saving_path)
@@ -134,4 +134,4 @@ def save_solved_puzzles(image_index, solution, saving_path):
             saving_path,
             f"solved_puzzle_{str(image_index).zfill(2)}_{str(i).zfill(2)}.png",
         )
-        Image.fromarray(cv2.cvtColor(sol, cv2.COLOR_BGR2RGB)).save(filename)
+        Image.fromarray(sol).save(filename)

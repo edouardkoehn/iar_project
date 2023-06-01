@@ -32,7 +32,7 @@ def dissimilarity_measure(first_piece, second_piece, orientation="LR"):
     # | L | - | R |
     if orientation == "LR":
         color_difference = (
-            first_piece[:rows, columns - 1, :] - second_piece[:rows, 0, :]
+            first_piece[:rows, columns - 3, :] - second_piece[:rows, 3, :]
         )
 
     # | T |
@@ -40,7 +40,7 @@ def dissimilarity_measure(first_piece, second_piece, orientation="LR"):
     # | D |
     if orientation == "TD":
         color_difference = (
-            first_piece[rows - 1, :columns, :] - second_piece[0, :columns, :]
+            first_piece[rows - 3, :columns, :] - second_piece[3, :columns, :]
         )
 
     squared_color_difference = np.power(color_difference / 255.0, 2)

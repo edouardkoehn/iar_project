@@ -4,7 +4,7 @@ import os
 import cv2
 import numpy as np
 
-GENERAL_PATH = "/Users/edouardkoehn/Documents/GitHub/iar_project"  # Need to be modified
+GENERAL_PATH = "/Users/begue/OneDrive/Documents/EPFL/Master/Cours/MA2/IAPR/projet/iar_project"  # Need to be modified
 
 DATA_PATH = GENERAL_PATH + "/data_project"
 DATA_PATH2 = GENERAL_PATH + "/data_project2"
@@ -12,6 +12,17 @@ SEGMENTATION_OUTPUT_PATH = DATA_PATH + "/segmentation_results"
 SEGMENTATION_OUTPUT_PATH2 = DATA_PATH2 + "/segmentation_results"
 SOL_OUTPUT_PATH2 = DATA_PATH2 + "/train2_solutions"
 CLUSTERING_OUTPUT_PATH2 = DATA_PATH2 + "/clustering_results"
+
+
+def check_model_path():
+    path = GENERAL_PATH + "/CNN_model"
+    if os.path.exists(path):
+        if len(os.listdir(path)) != 1:
+            print(f"ERROR: CNN model is missing in folder: {path}")
+            exit()
+    else:
+        print("ERROR: CNN model folder missing")
+        exit()
 
 
 def import_train():
@@ -124,3 +135,16 @@ def check_output_clustering_folder(dataset_used=2):
     if not (os.path.exists(path_out)):
         os.mkdir(path_out)
     return path_out
+
+
+def load_unsolved_images(index_image, n_cluster):
+    unsolved_images = []
+    for i in range(n_cluster):
+        path = f"{CLUSTERING_OUTPUT_PATH2}/solution_{str(index_image).zfill(2)}_{str(i).zfill(2)}.png"
+        if os.path.exists(path):
+            img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+            img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            unsolved_images.append(img)
+        else:
+            print(f"Image {path} not found.")
+    return unsolved_images

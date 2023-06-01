@@ -1,24 +1,22 @@
 ## load images
-import os 
-from PIL import Image
-
-
-import numpy as np
-import matplotlib.pyplot as plt
-
-import cv2 as cv
+import os
 from time import time
 
+import cv2 as cv
+import matplotlib.pyplot as plt
+import numpy as np
+from PIL import Image
 from solving_puzzle.genetic_algorithm import GeneticAlgorithm
 
 folder = "puzzle_unsolve"
-filename= "test.jpg"
+filename = "test.jpg"
+
 
 def create_puzzle(image):
     if image.shape[0] > image.shape[1]:
         rows = 4
         cols = 3
-    elif image.shape[1] == 512 and image.shape[0] == 512 :
+    elif image.shape[1] == 512 and image.shape[0] == 512:
         rows = 4
         cols = 4
     else:
@@ -55,41 +53,30 @@ def create_puzzle(image):
 
     return puzzle_pieces
 
-def solve_puzzle(image_unsolve , piece_size = 128 , population = 600 , generations = 20 , termination_threshold=10, verbose = False , save = False):
-        
-    print("\n=== Population:  {}".format(population))
-    print("=== Generations: {}".format(generations))
-    print("=== Piece size:  {} px".format(piece_size))
+
+def solve_puzzle(
+    image_unsolve,
+    piece_size=128,
+    population=600,
+    generations=20,
+    termination_threshold=10,
+    verbose=False,
+    save=False,
+):
+
+    # print("\n=== Population:  {}".format(population))
+    # print("=== Generations: {}".format(generations))
+    # print("=== Piece size:  {} px".format(piece_size))
 
     # Let the games begin! And may the odds be in your favor!
     start = time()
-    algorithm = GeneticAlgorithm(image_unsolve, piece_size, population, generations, termination_threshold)
+    algorithm = GeneticAlgorithm(
+        image_unsolve, piece_size, population, generations, termination_threshold
+    )
     solution = algorithm.start_evolution(verbose)
     end = time()
 
-    print("\n=== Done in {0:.3f} s".format(end - start))
+    # print("\n=== Done in {0:.3f} s".format(end - start))
 
-    solution_image = solution.to_image()
-
-
-    print("=== Close figure to exit")
-    #plot the original image and the solution
-    fig = plt.figure(figsize=(12, 6))
-
-    ax = fig.add_subplot(1, 2, 1)
-    ax.axis('off')
-    ax.imshow(image_unsolve)
-
-    ax = fig.add_subplot(1, 2, 2)
-    ax.axis('off')
-    ax.imshow(solution_image)
-
-    plt.show()
-
+    solution_image = solution.to_image().astype(np.uint8)
     return solution_image
-
-path = os.getcwd() + "/data_project"
-puzzle_unsolved = Image.open(os.path.join(path,folder,filename)).convert('RGB')
-puzzle_unsolved = np.array(puzzle_unsolved)
-solution_image = solve_puzzle(puzzle_unsolved , piece_size = 128, population = 100 , generations = 50 , termination_threshold=30, verbose = False , save = False)
-
