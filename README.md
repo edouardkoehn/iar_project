@@ -1,5 +1,32 @@
-# Project IAPR
-Repository containing the code for the IAPR-project.
+# Project IAPR -Group 19
+This repository contain all the source code for the IAPR-Project 23.
+All the required documentation of the repository is contain in this README.
+# Installation
+- Clone the repository
+
+```bash
+git clone https://github.com/edouardkoehn/iar_project.git
+```
+- Create your virtual env
+```bash
+conda create -n iar_project python=3
+conda activate iar_project
+```
+- Install poetry (all the dependencies managnement was done using [Poetry](https://python-poetry.org/))
+```bash
+pip install poetry
+```
+- Install the dependancies
+```bash
+poetry install
+```
+- Modifiy the project path in the file ```/iar_project/utils.py```
+
+```bash
+#Path to the repository
+L:7 GENERAL_PATH = "/Users/jeanpaul/Documents/GitHub/iar_project"
+```
+
 # Segmentation
 Make sure that you followed the instrucrtions before running the code.
 All the methods use for the segmentation can be found in the file ```iar_project/segmentation.py```
@@ -8,7 +35,7 @@ To run the segementation, you juste need to run the noto ```notebooks/0_Segmenta
 
 # Clustering
 # Solving the puzzle
-## Installation
+# Installation
 - Clone the repo
 
 ```bash

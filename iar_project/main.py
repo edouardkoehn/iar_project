@@ -4,8 +4,7 @@ import iar_project.segmentation as segmentation
 import iar_project.utils as utils
 
 # General config for the pipeline
-GENERAL_PATH = "/Users/edouardkoehn/Documents/GitHub/iar_project"
-DATA_PATH = GENERAL_PATH + "/data_project2/test2/"
+DATA_PATH = utils.GENERAL_PATH + "/data_project2/test2/"
 group_ID = 19
 nb_images = 12
 
