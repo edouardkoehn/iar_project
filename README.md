@@ -52,39 +52,25 @@ Processing Image 0
 ```
 The ouptut of the script would be saved under ```/data_project2/solutions_group_19``` using the naming convention given by the TA's.
 
+# Work description
+## 1) Segmentation
+For the segmentation, our approach was to combine mutliple simple filter to get an accurate segementation. Each filter is a binary mask that has been produced using a combination of simple segmentation algorithm:
+- [Thresholding specific channels (HSV, RGB, Gray scale)](https://en.wikipedia.org/wiki/Balanced_histogram_thresholding)
+- [Canny edge detection](https://en.wikipedia.org/wiki/Canny_edge_detector)
+- [Morphological operation (Opening, Closing)](https://fr.wikipedia.org/wiki/Morphologie_math%C3%A9matique)
 
-# Segmentation
-Make sure that you followed the instrucrtions before running the code.
-All the methods use for the segmentation can be found in the file ```iar_project/segmentation.py```
+We applied a cleaning step on each to those filter to ensure that they fit our requirements. The cleaning step created square object and check that the area of the object is in a specific range.
 
-To run the segementation, you juste need to run the noto ```notebooks/0_Segmentation.ipynb```. The results of the segmentation would be strored in the folder ```data_project/segmentation_results``` or ```data_project2/segmentation_results``` depending on the database used.
+Once those filter have been produce, we combine them to get a good segmentation mask.
+<p align="center">
+<img src=figures/fig_segmentation_0.png width=50%>
+</p>
 
-# Clustering
-# Solving the puzzle
-# Installation
-- Clone the repo
 
-```bash
-git clone https://github.com/edouardkoehn/WM_Atlas.git
-```
-- Create your virtual env
-```bash
-conda create -n iar_project python=3
-conda activate iar_project
-```
-- Install poetry
-```bash
-pip install poetry
-```
-- Install the modul and set up the precommit
-```bash
-poetry install
-pre-commit install
-poetry env info
-```
-- Modifiy the project path in the file ```iar_project.py```
+From the segmentation mask, we extract the object and save them as single png file. To save the object as single file, we need to rotate the object to ensure that it is aligned with the image referential.
 
-```bash
-#Path to the repository
-L:6 GENERAL_PATH = "/Users/jeanpaul/Documents/GitHub/iar_project"
-```
+All the source code for the segementation is contained in the file  ```iar_project/segementation.py```
+
+## 2) Feature extraction
+## 3) Clustering
+## 4) Solving the puzzle
