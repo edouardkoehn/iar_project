@@ -7,23 +7,26 @@ All the required documentation of the repository is contain in this README.
 ```bash
 git clone https://github.com/edouardkoehn/iar_project.git
 ```
-- Create your virtual env
+2) Create your virtual env
 ```bash
 conda create -n iar_project python=3
 conda activate iar_project
 ```
-2) Install poetry (all the dependencies managnement was done using [Poetry](https://python-poetry.org/))
+3) Install poetry (all the dependencies managnement was done using [Poetry](https://python-poetry.org/))
 ```bash
 pip install poetry
 ```
-3) Install the dependancies
+4) Install the dependancies
 ```bash
 poetry install
 pip install tensorflow==2.12.0
 ```
-4) Modifiy the project path in the file ```/iar_project/utils.py```
+5) Modifiy the project path in the file ```/iar_project/utils.py```
 
 ```bash
+
+6) Download the model for the CNN from https://drive.google.com/file/d/1-KgZ9ay6BIJjkRLsIsWJdCh0ZAHiwfpz/view, and place it under the folder CNN_model at the root of the repository.
+
 #Path to the repository
 L:7 GENERAL_PATH = "/Users/jeanpaul/Documents/GitHub/iar_project"
 ```
@@ -74,6 +77,7 @@ All the source code for the segementation is contained in the file  ```iar_proje
 
 ## 2) Feature extraction
 We extract the following 7 features from the images:
+
 Shape:
 - Entropy median with two different radii
 - Mean of the power spectrum of the gray scale DFT
